@@ -1,0 +1,56 @@
+name: deploy-pg-api
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  deploy-pg-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  
+        # Clona tu repo para que esté disponible el contexto de build :contentReference[oaicite:0]{index=0}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Hello World
+        run: echo 'hello world ...'
+
+      - name: List files
+        run: ls -la
+
+      - name: Create .env
+        run: |
+          touch .env
+          echo 'DEV_DATABASE_URL=${{ secrets.PG_CONN }}' >> .env
+
+      - name: Show .env
+        run: cat .env
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --file ./.Dockerfile \
+            -t willyrexx/pg-restapi-legends:${{ github.sha }} \
+            .
+        # Especificamos tu archivo .Dockerfile con --file :contentReference[oaicite:1]{index=1}
+
+      - name: List Docker images
+        run: docker images
+
+      - name: Docker login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USER }}/pg-restapi-legends:${{ github.sha }}
+
+        
+      - name: docker push
+        run:  docker push ${{ secrets.DOCKER_USER}}/pg-restapi-legends:${{github.sha}}   
