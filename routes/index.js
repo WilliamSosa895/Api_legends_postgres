@@ -5,11 +5,11 @@ const router = Router();
 
 router.get('/', (req, res) => res.send('Welcome'));
 
-// CRUD Leyendas
 router.post('/legends', controllers.createLegend);
 router.get('/legends', controllers.getAllLegends);
+router.get("/legends/:id", controllers.getLegendById);
 router.put('/legends/:id', controllers.updateLegend);
-router.patch('/legends/:id', controllers.updateLegend);  // opcional
+router.patch('/legends/:id', controllers.updateLegend);  
 router.delete('/legends/:id', controllers.deleteLegend);
 
 module.exports = router;

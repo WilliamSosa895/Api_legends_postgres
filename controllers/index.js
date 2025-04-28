@@ -1,6 +1,5 @@
 const models = require("../database/models");
 
-// CREATE
 const createLegend = async (req, res) => {
   try {
     const legend = await models.Legend.create(req.body);
@@ -10,7 +9,6 @@ const createLegend = async (req, res) => {
   }
 };
 
-// READ ALL
 const getAllLegends = async (req, res) => {
   try {
     const legends = await models.Legend.findAll();
@@ -20,7 +18,19 @@ const getAllLegends = async (req, res) => {
   }
 };
 
-// UPDATE
+const getLegendById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const legend = await models.Legend.findByPk(id);
+    if (!legend) {
+      return res.status(404).json({ message: "Leyenda no encontrada" });
+    }
+    return res.status(200).json({ legend });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 const updateLegend = async (req, res) => {
   const { id } = req.params;
   const nuevosDatos = req.body;
@@ -41,7 +51,6 @@ const updateLegend = async (req, res) => {
   }
 };
 
-// DELETE
 const deleteLegend = async (req, res) => {
   const { id } = req.params;
 
@@ -63,6 +72,7 @@ const deleteLegend = async (req, res) => {
 module.exports = {
   createLegend,
   getAllLegends,
+  getLegendById,
   updateLegend,
   deleteLegend
 };
